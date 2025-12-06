@@ -1,13 +1,20 @@
 #!/bin/bash
 
-echo "--- Iniciando Aprovisionamiento ---"
+echo "--- Iniciando despliegue (Artefacto 4.1) ---"
 
-# 1. Crear index.html (Corrección: especificar el archivo, no solo la carpeta)
-echo "<h1>Examen Final - Vittorio - Despliegue Exitoso</h1>" > deploy/index.html
+# Crear estructura de carpetas 
+mkdir -p deploy/html
 
-# 2. Levantar contenedor (Corrección: sintaxis estricta de docker-compose)
-echo "Levantando contenedor Nginx..."
-docker-compose -f deploy/docker-compose.yml up -d
+#  Crear index.html 
+echo "<h1>Examen Final - Vittorio - Despliegue Exitoso</h1>" > deploy/html/index.html
 
-echo "--- Aprovisionamiento Completado ---"
-echo "Verifica el acceso en: http://localhost:8080"
+#  Levantar el contenedor
+echo "Levantando Docker Compose..."
+docker-compose -f deploy/docker-compose.yml up -d --force-recreate
+
+if [ $? -eq 0 ]; then
+    echo "¡Listo! Servicio 'production_web' activo."
+else
+    echo "ERROR: Docker falló."
+    exit 1
+fi
